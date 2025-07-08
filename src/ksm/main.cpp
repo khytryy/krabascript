@@ -13,7 +13,7 @@
 #include <unistd.h>
 #endif
 
-constexpr const char* KSM_VERSION = "0.0.1";
+constexpr const char* KSM_VERSION = "25.1";
 
 int main(int argc, char* argv[]) {
     if (argc == 2) {

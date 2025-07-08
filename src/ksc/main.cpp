@@ -3,9 +3,9 @@
 #include <string>
 #include <vector>
 
-#include "parser.h"
+#include <tokenizer.h>
 
-constexpr const char* KSC_VERSION = "0.0.1";
+constexpr const char* KSC_VERSION = "25.1";
 constexpr const char* KSC_TARGET_X86_64_W64 = "-target=x86_64-w64";
 constexpr const char* KSC_TARGET_X86_64_W32 = "-target=x86_64-w32";
 
@@ -17,10 +17,6 @@ constexpr const char* KSC_TARGET_DEFAULT = "-target=x86_64-w64";
 
 std::string platform;
 std::string arch;
-
-std::vector<std::string> sourceCode;
-
-Tokenizer tokenizer;
 
 void showUsage() {
     std::cout << "usage: ksc [options] file..." << std::endl;
@@ -50,7 +46,10 @@ bool handleOption(const std::string& arg) {
 }
 
 int main(int argc, char* argv[]) {
-    sourceCode.clear();
+
+    Tokenizer tokenizer("");
+    std::vector<std::string> lines;
+
     if (argc <= 1) {
         std::cerr << "ksc: \033[31merror:\033[0m no input file" << std::endl;
         return 1;
@@ -68,13 +67,27 @@ int main(int argc, char* argv[]) {
             }
         } else {
 
-            if (!tokenizer.loadSource(arg, sourceCode)) {
+            if (!tokenizer.loadSource(arg, lines)) {
                 return 1;
             }
             
             fileOpened = true;
 
+            std::string source;
+            for (const auto& line : lines) {
+                source += line + '\n';
+            }
 
+            Tokenizer t(source);
+            std::vector<ksToken> tokens = t.tokenize();
+
+            for (const auto& token : tokens) {
+                std::cout << "Token: " << t.tokenToString(token);
+                if (token.value.has_value()) {
+                    std::cout << " -> " << token.value.value();
+                }
+                std::cout << " (line " << token.line << ")\n";
+            }
         }
     }
 
