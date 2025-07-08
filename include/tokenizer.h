@@ -7,12 +7,14 @@
 #include <sstream>
 #include <optional>
 
+
+std::string filepath;
+
 enum class ksTokenType {
     semicolon,
     open_parentheses,
     closed_parentheses,
     identifier,
-    let,
     equals,
     plus,
     minus,
@@ -37,6 +39,7 @@ enum class ksTokenType {
     attribute_no_return,
     attribute_end,
     function,
+    int_type,
 };
 
 struct ksToken {
@@ -49,12 +52,16 @@ class Tokenizer {
 public:
     explicit Tokenizer(std::string src): m_src(std::move(src)) {}
 
-    bool loadSource(const std::string & filename, std::vector < std::string > & output) {
+    bool loadSource(const std::string &filename, std::vector<std::string> &output) {
+        filepath = filename;
+
         std::ifstream file(filename);
         if (!file) {
             std::cerr << "ksc: \033[31merror:\033[0m cannot open file '" << filename << "'\n";
             return false;
         }
+
+        
 
         std::string line;
         while (std::getline(file, line)) {
@@ -79,9 +86,6 @@ public:
                 break;
             case ksTokenType::identifier:
                 oss << "identifier";
-                break;
-            case ksTokenType::let:
-                oss << "let";
                 break;
             case ksTokenType::equals:
                 oss << "==";
@@ -152,6 +156,9 @@ public:
             case ksTokenType::function:
                 oss << "function";
                 break;
+            case ksTokenType::int_type:
+                oss << "int";
+                break;
             default:
                 return "unknown";
         }
@@ -173,9 +180,6 @@ public:
                     buffer.push_back(consume());
                 } if (buffer == "return") {
                     tokens.push_back({ ksTokenType::ks_return, line });
-                    buffer.clear();
-                } else if (buffer == "let") {
-                    tokens.push_back({ ksTokenType::let, line });
                     buffer.clear();
                 } else if (buffer == "if") {
                     tokens.push_back({ ksTokenType::ks_if, line });
@@ -201,10 +205,9 @@ public:
                 } else if (buffer == "function") {
                     tokens.push_back({ ksTokenType::function, line});
                     buffer.clear();
-                    if (std::isspace(peek(1).value())) {
-                        std::cerr << "ksc: \033[31merror:\033[0m function doesnt have a name at line " << line;
-                        exit(1);
-                    }
+                } else if (buffer == "int") {
+                    tokens.push_back({ ksTokenType::int_type, line });
+                    buffer.clear();
                 } else {
                     tokens.push_back({ ksTokenType::identifier, line, buffer });
                     buffer.clear();
@@ -230,7 +233,8 @@ public:
                 }
 
                 if (!peek().has_value() || consume() != ']') {
-                    std::cerr << "ksc: \033[31merror:\033[0m expeced ']' after an attribute\n";
+                    std::cerr << "\033[1mIn file " << filepath << " " << line << "\033[0m\n";
+                    std::cerr << "      \033[31merror:\033[0m expected ']' after an attribute\n";
                     exit(1);
                 }
 
@@ -241,7 +245,8 @@ public:
                 } else if (attribute == "no_return") {
                     tokens.push_back({ ksTokenType::attribute_no_return, line});
                 } else {
-                    std::cerr << "ksc: \033[31merror:\033[0m unknown attribute '" << attribute << "'\n";
+                    std::cerr << "\033[1mIn file " << filepath << " " << line << "\033[0m\n";
+                    std::cerr << "      \033[31merror:\033[0m unknown attribute '" << attribute << "'\n";
                     exit(1);
                 }
 
@@ -281,6 +286,10 @@ public:
             }
             else if (peek().value() == '=') {
                 consume();
+                tokens.push_back({ ksTokenType::assigment, line });
+            }
+            else if (peek().value() == '=' && peek(1).has_value() && peek(1).value() == '=') {
+                consume();
                 tokens.push_back({ ksTokenType::equals, line });
             }
             else if (peek().value() == '+') {
@@ -315,10 +324,13 @@ public:
                 consume();
             }
             else {
-                std::cerr << "ksc: \033[31merror:\033[0m invalid token '" 
-                << peek().value() << "' at line " << line << std::endl;
+                std::cerr << "\033[1mIn file " << filepath << " " << line << "\033[0m\n";
+                std::cerr << "      \033[31merror:\033[0m invalid token '" 
+                << peek().value() << "'\n";
                 exit(1);
             }
+
+            
         }
         return tokens;
     }
