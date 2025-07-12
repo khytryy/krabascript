@@ -3,10 +3,13 @@ project(krabascript)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-# Add source files
-file(GLOB_RECURSE KSC_SOURCES src/ksc/*.cpp)
-file(GLOB_RECURSE KSM_SOURCES src/ksm/*.cpp)
+file(GLOB_RECURSE KSC_SOURCES "src/ks compiler/*.cpp")
 
-add_executable(ksc ${KSC_SOURCES})
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(LIBZIP REQUIRED libzip)
+include_directories(${LIBZIP_INCLUDE_DIRS})
+link_directories(${LIBZIP_LIBRARY_DIRS})
 
-add_executable(ksm ${KSM_SOURCES})
+add_executable(krabascript ${KSC_SOURCES})
+
+target_link_libraries(krabascript ${LIBZIP_LIBRARIES})

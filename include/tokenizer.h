@@ -22,7 +22,7 @@ enum class ksTokenType {
     closed_curly,
     open_bracket,
     closed_bracket,
-    assigment,
+    assignment,
     ks_return,
     ks_if,
     ks_else,
@@ -40,6 +40,28 @@ enum class ksTokenType {
     attribute_end,
     function,
     int_type,
+    module,
+    colon,
+    string_literal,
+    char_literal,
+    open_angle,
+    closed_angle,
+    dot,
+    comma,
+    ks_void,
+    ks_struct,
+    ks_extern,
+    u8,
+    u16,
+    u32,
+    u64,
+    package,
+    ks_public,
+    let,
+    mut,
+    use,
+    loop,
+    ks_for,
 };
 
 struct ksToken {
@@ -57,7 +79,7 @@ public:
 
         std::ifstream file(filename);
         if (!file) {
-            std::cerr << "ksc: \033[31merror:\033[0m cannot open file '" << filename << "'\n";
+            std::cerr << "krabascript: \033[31merror:\033[0m cannot open file '" << filename << "'\n";
             return false;
         }
 
@@ -108,7 +130,7 @@ public:
             case ksTokenType::closed_bracket:
                 oss << "]";
                 break;
-            case ksTokenType::assigment:
+            case ksTokenType::assignment:
                 oss << "=";
                 break;
             case ksTokenType::ks_return:
@@ -159,6 +181,69 @@ public:
             case ksTokenType::int_type:
                 oss << "int";
                 break;
+            case ksTokenType::module:
+                oss << "module";
+                break;
+            case ksTokenType::colon:
+                oss << ":";
+                break;
+            case ksTokenType::string_literal:
+                oss << "string";
+                break;
+            case ksTokenType::char_literal:
+                oss << "char";
+                break;
+            case ksTokenType::open_angle:
+                oss << "<";
+                break;
+            case ksTokenType::closed_angle:
+                oss << ">";
+                break;
+            case ksTokenType::dot:
+                oss << ".";
+                break;
+            case ksTokenType::comma:
+                oss << ",";
+                break;
+            case ksTokenType::ks_void:
+                oss << "void";
+                break;
+            case ksTokenType::ks_extern:
+                oss << "extern";
+                break;
+            case ksTokenType::u8:
+                oss << "u8";
+                break;
+            case ksTokenType::u16:
+                oss << "u16";
+                break;
+            case ksTokenType::u32:
+                oss << "u32";
+                break;
+            case ksTokenType::u64:
+                oss << "u64";
+                break;
+            case ksTokenType::package:
+                oss << "package";
+                break;
+            case ksTokenType::ks_public:
+                oss << "public";
+                break;
+            case ksTokenType::let:
+                oss << "let";
+                break;
+            case ksTokenType::mut:
+                oss << "mut";
+                break;
+            case ksTokenType::use:
+                oss << "use";
+                break;
+            case ksTokenType::ks_for:
+                oss << "for";
+                break;
+            case ksTokenType::loop:
+                oss << "loop";
+                break;
             default:
                 return "unknown";
         }
@@ -173,10 +258,10 @@ public:
         int line = 1;
         while (peek().has_value()) {
 
-            if (std::isalpha(peek().value())) {   
+            if (std::isalpha(peek().value()) || peek().value() == '_') { 
                                                                                     // if the next char is an alphabetical char, start an identifier                     
                 buffer.push_back(consume());                                        // or a keyword
-                while (peek().has_value() && std::isalnum(peek().value())) {
+                while (peek().has_value() && (std::isalnum(peek().value()) || peek().value() == '_')) {
                     buffer.push_back(consume());
                 } if (buffer == "return") {
                     tokens.push_back({ ksTokenType::ks_return, line });
@@ -208,6 +293,54 @@ public:
                 } else if (buffer == "int") {
                     tokens.push_back({ ksTokenType::int_type, line });
                     buffer.clear();
+                } else if (buffer == "module") {
+                    tokens.push_back({ ksTokenType::module, line });
+                    buffer.clear(); 
+                } else if (buffer == "char") {
+                    tokens.push_back({ ksTokenType::char_literal, line });
+                    buffer.clear(); 
+                } else if (buffer == "void") {
+                    tokens.push_back({ ksTokenType::ks_void, line });
+                    buffer.clear(); 
+                } else if (buffer == "struct") {
+                    tokens.push_back({ ksTokenType::ks_void, line });
+                    buffer.clear(); 
+                } else if (buffer == "extern") {
+                    tokens.push_back({ ksTokenType::ks_extern, line });
+                    buffer.clear(); 
+                } else if (buffer == "u8") {
+                    tokens.push_back({ ksTokenType::u8, line });
+                    buffer.clear(); 
+                } else if (buffer == "u16") {
+                    tokens.push_back({ ksTokenType::u16, line });
+                    buffer.clear();
+                } else if (buffer == "u32") {
+                    tokens.push_back({ ksTokenType::u32, line });
+                    buffer.clear();
+                } else if (buffer == "u64") {
+                    tokens.push_back({ ksTokenType::u64, line });
+                    buffer.clear();
+                } else if (buffer == "package") {
+                    tokens.push_back({ ksTokenType::package, line });
+                    buffer.clear(); 
+                } else if (buffer == "let") {
+                    tokens.push_back({ ksTokenType::let, line });
+                    buffer.clear(); 
+                } else if (buffer == "mut") {
+                    tokens.push_back({ ksTokenType::mut, line });
+                    buffer.clear(); 
+                } else if (buffer == "public") {
+                    tokens.push_back({ ksTokenType::ks_public, line });
+                    buffer.clear(); 
+                } else if (buffer == "use") {
+                    tokens.push_back({ ksTokenType::use, line });
+                    buffer.clear(); 
+                } else if (buffer == "for") {
+                    tokens.push_back({ ksTokenType::ks_for, line });
+                    buffer.clear(); 
+                } else if (buffer == "loop") {
+                    tokens.push_back({ ksTokenType::loop, line });
+                    buffer.clear(); 
                 } else {
                     tokens.push_back({ ksTokenType::identifier, line, buffer });
                     buffer.clear();
@@ -284,9 +417,17 @@ public:
                 consume();
                 tokens.push_back({ ksTokenType::semicolon, line });
             }
+            else if (peek().value() == '[') {
+                consume();
+                tokens.push_back({ ksTokenType::open_bracket, line });
+            }
+            else if (peek().value() == ']') {
+                consume();
+                tokens.push_back({ ksTokenType::closed_bracket, line });
+            }
             else if (peek().value() == '=') {
                 consume();
-                tokens.push_back({ ksTokenType::assigment, line });
+                tokens.push_back({ ksTokenType::assignment, line });
             }
             else if (peek().value() == '=' && peek(1).has_value() && peek(1).value() == '=') {
                 consume();
@@ -319,6 +460,44 @@ public:
             else if (peek().value() == '\n') {
                 consume();
                 line++;
+            }
+            else if (peek().value() == '<') {
+                consume();
+                tokens.push_back({ ksTokenType::open_angle, line });
+            }
+            else if (peek().value() == '>') {
+                consume();
+                tokens.push_back({ ksTokenType::closed_angle, line });
+            }
+            else if (peek().value() == '.') {
+                consume();
+                tokens.push_back({ ksTokenType::dot, line });
+            }
+            else if (peek().value() == ',') {
+                consume();
+                tokens.push_back({ ksTokenType::comma, line });
+            }
+            else if (peek().value() == ':') {
+                consume();
+                tokens.push_back({ ksTokenType::colon, line });
+            }
+            else if (peek().value() == '"') {
+                consume();
+
+                std::string str_value;
+                while (peek().has_value() && peek().value() != '"') {
+                    str_value.push_back(consume());
+                }
+
+                if (!peek().has_value()) {
+                    std::cerr << "\033[1mIn file " << filepath << " " << line << "\033[0m\n";
+                    std::cerr << "      \033[31merror:\033[0m unterminated string literal\n";
+                    exit(1);
+                }
+
+                consume();
+
+                tokens.push_back({ ksTokenType::string_literal, line, str_value });
             }
             else if (std::isspace(peek().value())) {                               // ignore the spaces
                 consume();
