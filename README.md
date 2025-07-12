@@ -9,6 +9,9 @@
 ### What is krabascript?
 krabascript is a pl designed for freestanding x86_64 and x86_64
 
-### How to build & install it?
-run ``cd build && make && cd .. && ks-install``
-
+### How to build it?
+run
+``mkdir build``
+``cd build``
+``cmake .. -G "Unix Makefiles"``
+``make``
