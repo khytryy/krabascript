@@ -1,28 +1,15 @@
 {
     "configurations": [
         {
-            "name": "Linux",
+            "name": "krabaconf",
             "includePath": [
-                "${workspaceFolder}/**",
-                "${workspaceFolder}/include"
+                "${workspaceFolder}/**"
             ],
             "defines": [],
-            "compilerPath": "/usr/bin/g++",
-            "cStandard": "c23",
-            "cppStandard": "c++23",
-            "intelliSenseMode": "linux-gcc-x64"
-        },
-        {
-            "name": "krabascript",
-            "includePath": [
-                "${workspaceFolder}/**",
-                "${workspaceFolder}/include"
-            ],
-            "defines": [],
-            "compilerPath": "/usr/bin/clang",
+            "compilerPath": "/usr/bin/gcc",
             "cStandard": "c17",
             "cppStandard": "c++17",
-            "intelliSenseMode": "linux-clang-x64"
+            "intelliSenseMode": "linux-gcc-arm64"
         }
     ],
     "version": 4

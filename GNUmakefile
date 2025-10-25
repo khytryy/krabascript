@@ -1,6 +1,6 @@
-CFILES 	:= $(wildcard source/*.cpp)
-CFLAGS 	:= -I include
-CC		:= g++
+CFILES 	:= $(wildcard source/*.c)
+CFLAGS 	:= -I include -ggdb
+CC		:= gcc
 
 OUTPUT 	:= krabascript
 
