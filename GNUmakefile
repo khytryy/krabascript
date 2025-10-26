@@ -10,3 +10,6 @@ $(OUTPUT) : $(CFILES)
 
 clean:
 	rm -f $(OUTPUT)
+
+install:
+	sudo mv myprog /usr/local/bin/

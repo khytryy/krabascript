@@ -7,7 +7,7 @@
 #include <stdbool.h> // For bool
 #include <string.h>
 
-#include <colors.h>
+#include "colors.h"
 
 size_t Index = 0;
 size_t Line = 0;
@@ -47,7 +47,7 @@ typedef enum {
   ks_const,
   ks_static,
   ks_function,
-  ks_string, // Use this comment if you're lost
+  ks_string,            // Use this comment if you're lost
   ks_arrow,
   ks_open_paren,
   ks_closed_paren,
@@ -185,24 +185,24 @@ typedef struct {
 } KeywordEntry;
 
 static const KeywordEntry Keywords[] = {
-    {"while",         ks_while},
-    {"for",           ks_for},
-    {"void",          ks_void},
-    {"break",         ks_break},
-    {"and",           ks_and},
-    {"or",            ks_or},
-    {"xor",           ks_xor},
-    {"not",           ks_not},
-    {"if",            ks_if},
-    {"else",          ks_else},
-    {"continue",      ks_continue},
-    {"test",          ks_test},
-    {"case",          ks_case},
-    {"default",       ks_default},
-    {"short",         ks_short},
-    {"long",          ks_long},
-    {"unsigned",      ks_unsigned},
-    {"int",           ks_int},
+    {"while", ks_while},
+    {"for", ks_for},
+    {"void", ks_void},
+    {"break", ks_break},
+    {"and", ks_and},
+    {"or", ks_or},
+    {"xor", ks_xor},
+    {"not", ks_not},
+    {"if", ks_if},
+    {"else", ks_else},
+    {"continue", ks_continue},
+    {"test", ks_test},
+    {"case", ks_case},
+    {"default", ks_default},
+    {"short", ks_short},
+    {"long", ks_long},
+    {"unsigned", ks_unsigned},
+    {"int", ks_int},
     {"char", ks_char},
     {"sizeof", ks_sizeof},
     {"return", ks_return},
