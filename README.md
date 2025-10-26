@@ -1,0 +1,1 @@
+# Krabascript - Statically typed language

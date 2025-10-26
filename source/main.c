@@ -1,3 +1,10 @@
+/*
+  Project:      Krabascript compiler project
+  License:      GNU GPL-3.0 License
+  Purpose:      Process the arguments and kickstart the compiler
+  Copyright:    Copyright Yehor Khytryy
+*/
+
 #include <colors.h>
 #include <stdbool.h>
 #include <stdio.h>

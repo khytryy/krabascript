@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstddef>
 #include <stdio.h>
 #include "tokenizer.h"
 
@@ -20,9 +19,6 @@ typedef enum {
   else_statement,
 
 } ASTType;
-
-#define HANDLE(ASTTYPE, AST, TOKENS, INDEX) \
-  ASTTYPE##_handler(AST, TOKENS, INDEX)
 
 typedef struct {
   ASTType NodeType;
@@ -65,18 +61,29 @@ TokenType GetTokenType(TokenVector Tokens, size_t Index, size_t Add) {
   return Tokens.Data[Index + Add].Type;
 }
 
+typedef void (*ASTHandler)(ASTParent *AST, TokenVector *Tokens, size_t *Index);
 
-void IntDeclarationHandler(TokenVector *Tokens, ASTParent *AST, size_t *Index) {
-
-  if (GetTokenType(Tokens, Index, 0)) {
-
+void IntHandler(ASTParent *AST, TokenVector *Tokens, size_t *Index) {
+  if (GetTokenType(Tokens, Index, 0) == ks_int && 
+      GetTokenType(Tokens, Index, 1) == ks_identifier && GetTokenType(Tokens, Index, 2) == ks_semi) {
+    
+      
   }
 }
+
+typedef struct {
+  TokenType   Type;
+  ASTHandler  Handler;
+
+} HandlerEntry;
+
+static const HandlerEntry Handlers[] = {
+  { ks_int,  IntHandler },
+};
 
 ASTParent CreateAST(TokenVector Tokens) {
 
   ASTParent AST;
-  ASTParent TempNode;
 
   for (size_t i = 0; i < Tokens.Size; i++) {
     Token Current = Tokens.Data[i];
