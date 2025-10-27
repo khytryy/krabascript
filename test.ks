@@ -1,1 +1,3 @@
-int kraba = 0;
+@import <stdlib.kh>
+
+function main(int a)

@@ -1,9 +1,19 @@
+/*
+  Project:      Krabascript compiler project
+  License:      GNU GPL-3.0 License
+  Purpose:      Parse the tokens and create a AST
+  Copyright:    Copyright 2025 Yehor Khytryy <yehor.khytryy@gmail.com>
+*/
+
 #pragma once
 
 #include <stdio.h>
 #include "tokenizer.h"
 
 #include <stdlib.h>
+
+#define ARRAY_GET_NUM_EL(ARRAY) \
+ sizeof(ARRAY) / sizeof(ARRAY[0])
 
 typedef enum {
   int_assigment,
@@ -53,22 +63,34 @@ void ANVecFree(ASTNodeVector *Vector) {
   Vector->Capacity = 0;
 }
 
+void ANVecPush(ASTNodeVector *Vector, ASTNode Value) {
+  if (Vector->Size >= Vector->Capacity) {
+    size_t NewCapacity = (Vector->Capacity == 0) ? 4 : Vector->Capacity * 2;
+    ASTNode *NewData = realloc(Vector->Data, NewCapacity * sizeof(ASTNode));
+
+    Vector->Data = NewData;
+    Vector->Capacity = NewCapacity;
+  }
+
+  Vector->Data[Vector->Size++] = Value;
+}
+
 Token GetToken(TokenVector Tokens, size_t Index, size_t Add) {
   return Tokens.Data[Index + Add];
 }
 
-TokenType GetTokenType(TokenVector Tokens, size_t Index, size_t Add) {
-  return Tokens.Data[Index + Add].Type;
+TokenType GetTokenType(TokenVector *Tokens, size_t Index, size_t Add) {
+  return Tokens->Data[Index + Add].Type;
 }
 
 typedef void (*ASTHandler)(ASTParent *AST, TokenVector *Tokens, size_t *Index);
 
 void IntHandler(ASTParent *AST, TokenVector *Tokens, size_t *Index) {
-  if (GetTokenType(Tokens, Index, 0) == ks_int && 
-      GetTokenType(Tokens, Index, 1) == ks_identifier && GetTokenType(Tokens, Index, 2) == ks_semi) {
-    
-      
-  }
+  
+}
+
+void FloatHandler(ASTParent *AST, TokenVector *Tokens, size_t *Index) {
+
 }
 
 typedef struct {
@@ -79,18 +101,24 @@ typedef struct {
 
 static const HandlerEntry Handlers[] = {
   { ks_int,  IntHandler },
+  { ks_float, FloatHandler },
 };
 
-ASTParent CreateAST(TokenVector Tokens) {
-
+ASTParent CreateAST(TokenVector Tokens, bool Verbose) {
   ASTParent AST;
+  size_t Index = 0;
 
-  for (size_t i = 0; i < Tokens.Size; i++) {
-    Token Current = Tokens.Data[i];
+  // Init vectors children
+  ANVecInit(&AST.Children);
 
-    // Int variable declaration
-    switch (Current.Type) {
-      // TODO: Add handlers
+  while (Index < Tokens.Size) {
+    for (size_t i = 0; i < ARRAY_GET_NUM_EL(Handlers); i++) {
+      if (GetTokenType(&Tokens, Index, 0) == Handlers[Index].Type) {
+        Handlers[i].Handler(&AST, &Tokens, &Index);
+      }
+      else {
+        Index++;      // Skip over tokens with no handlers
+      }
     }
   }
 }

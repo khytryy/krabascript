@@ -18,8 +18,7 @@ You can add yourself to the Copyright list if you're responsible for the whole f
 ### Indentation
 
 1. A line must be max 90 columns wide
-2. Use 4 spaces instead of tabs
-3. Don't use spaces around unary operators
+2. Don't use spaces around unary operators
 
 **Right:**
 ```i++;```
@@ -27,7 +26,7 @@ You can add yourself to the Copyright list if you're responsible for the whole f
 **Wrong:**
 ```i++ ;```
 
-4. Put spaces around operators
+3. Put spaces around operators
 
 **Right:**
 ```x << 5```
@@ -35,5 +34,5 @@ You can add yourself to the Copyright list if you're responsible for the whole f
 **Wrong:**
 ```x<<5```
 
-5. Don't place spaces between a comma and a semicolon
-6. Capitalize names of variables and functions.
+4. Don't place spaces between a comma and a semicolon
+5. Capitalize names of variables and functions.

@@ -1,15 +1,12 @@
+/*
+  Project:      Krabascript compiler project
+  License:      MIT License, see end of file for details
+  Purpose:      Process the arguments and kickstart the compiler
+  Copyright:    Copyright 2025 Xander Gouws <github.com/gouwsxander/easy-args>
+*/
+
 #ifndef EASYARGS_H
 #define EASYARGS_H
-
-/*
-    EasyArgs: A simple, single-header argument parser for C
-    Version: October 20, 2025
-    Author: Xander Gouws
-
-    Provided under an MIT License. See end of file for details.
-
-    See github.com/gouwsxander/easy-args for documentation and examples.
-*/
 
 #include <stdio.h>
 #include <stdlib.h>  // used for parsing (atoi, atof)

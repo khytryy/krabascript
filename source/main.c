@@ -2,7 +2,7 @@
   Project:      Krabascript compiler project
   License:      GNU GPL-3.0 License
   Purpose:      Process the arguments and kickstart the compiler
-  Copyright:    Copyright Yehor Khytryy
+  Copyright:    Copyright 2025 Yehor Khytryy <yehor.khytryy@gmail.com>
 */
 
 #include <colors.h>
@@ -70,8 +70,21 @@ int main(int argc, char *argv[]) {
   TokenizerTime = ((double)(End - Start)) / CLOCKS_PER_SEC;
 
   if (Args.comtime == true) {
-    printf("%skrabascript:%s SUCCESS:%s Tokenizer finished in %s%f%s.\n", BWHT,
-           BGRN, COLOR_RESET, BMAG, TokenizerTime, COLOR_RESET);
+    printf("%skrabascript:%s INFO:%s Tokenizer finished in %s%f%s.\n", BWHT,
+           BCYN, COLOR_RESET, BMAG, TokenizerTime, COLOR_RESET);
+  }
+
+  double ASTTime;
+
+  Start = clock();
+  // ASTParent AST = CreateAST(Tokens, Args.comtime);
+
+  End = clock();
+  ASTTime = ((double)(End - Start)) / CLOCKS_PER_SEC;
+
+  if (Args.comtime == true) {
+    printf("%skrabascript:%s INFO:%s Parser finished in %s%f%s.\n", BWHT,
+           BCYN, COLOR_RESET, BMAG, ASTTime, COLOR_RESET);
   }
 
   return 0;

@@ -1,3 +1,10 @@
+/*
+  Project:      Krabascript compiler project
+  License:      GNU GPL-3.0 License
+  Purpose:      Tokenize the source file
+  Copyright:    Copyright 2025 Yehor Khytryy <yehor.khytryy@gmail.com>
+*/
+
 #pragma once
 
 #include <stdio.h>
@@ -47,6 +54,7 @@ typedef enum {
   ks_const,
   ks_static,
   ks_function,
+  ks_import,
   ks_string,            // Use this comment if you're lost
   ks_arrow,
   ks_open_paren,
@@ -66,6 +74,7 @@ typedef enum {
   ks_comma,
   ks_qmark,
   ks_equals,
+  ks_at,
   ks_int_lit,
   ks_char_lit,
   ks_identifier,
@@ -217,6 +226,7 @@ static const KeywordEntry Keywords[] = {
     {"const", ks_const},
     {"static", ks_static},
     {"function", ks_function},
+    {"import", ks_import},
     {"string", ks_string},
 
     {NULL, 0} // End marker
@@ -241,6 +251,7 @@ static const KeywordEntry Symbols[] = {
     {",", ks_comma},
     {"?", ks_qmark},
     {"=", ks_equals},
+    {"@", ks_at},
 
     {NULL, 0},
 

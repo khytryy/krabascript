@@ -1,8 +1,9 @@
 /*
- * This is free and unencumbered software released into the public domain.
- *
- * For more information, please refer to <https://unlicense.org>
- */
+  Project:      Krabascript compiler project
+  License:      https://unlicense.org
+  Purpose:      ASCII Escape codes definitons
+  Copyright:    Copyright 2025 Yehor Khytryy <yehor.khytryy@gmail.com>
+*/
 
 //Regular text
 #define BLK "\e[0;30m"
