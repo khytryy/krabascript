@@ -86,7 +86,32 @@ TokenType GetTokenType(TokenVector *Tokens, size_t Index, size_t Add) {
 typedef void (*ASTHandler)(ASTParent *AST, TokenVector *Tokens, size_t *Index);
 
 void IntHandler(ASTParent *AST, TokenVector *Tokens, size_t *Index) {
-  
+
+  ASTNode Node;
+
+  if (GetTokenType(Tokens, *Index, 1) == ks_identifier) {
+    if (GetTokenType(Tokens, *Index, 2) == ks_semi) {
+
+      Node.NodeType = int_declaration;
+      Node.Value.HasValue = false;
+
+      ANVecPush(&AST->Children, Node);
+    }
+    else if (GetTokenType(Tokens, *Index, 2) == ks_equals) {
+      Node.NodeType = int_assigment;
+      
+      Token KSToken = GetToken(*Tokens, *Index, 3);
+
+      if (KSToken.Value.HasValue == true) {
+
+      }
+      else {
+
+        printf("%skrabascript:%s %sERROR:%s Expected an assigment, found '%s'\n", BWHT, BRED, COLOR_RESET, TokenToKeyword(GetToken(*Tokens, *Index, 3)));
+        return;
+      }
+    }
+  }
 }
 
 void FloatHandler(ASTParent *AST, TokenVector *Tokens, size_t *Index) {
