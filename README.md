@@ -5,6 +5,6 @@
 - [ ] Comments
 - [x] Tokenizer
 - [ ] Preprocessor
-- [ ] Parser
+- [ ] Parser (W.I.P)
 - [ ] IR
 - [ ] Generator
