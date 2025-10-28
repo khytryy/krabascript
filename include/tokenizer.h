@@ -72,6 +72,8 @@ typedef enum {
   ks_at,
   ks_plus,
   ks_minus,
+  ks_slash,
+  ks_backslash,
   ks_int_lit,
   ks_char_lit,
   ks_identifier,
@@ -197,6 +199,8 @@ static const KeywordEntry Symbols[] = {
     {"@", ks_at},
     {"+", ks_plus},
     {"-", ks_minus},
+    {"/", ks_slash},
+    {"\\", ks_backslash},
 
     {NULL, 0},
 
