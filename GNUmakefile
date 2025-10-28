@@ -12,4 +12,4 @@ clean:
 	rm -f $(OUTPUT)
 
 install:
-	sudo mv myprog /usr/local/bin/
+	sudo mv $(OUTPUT) /usr/local/bin/

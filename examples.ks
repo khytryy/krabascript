@@ -32,3 +32,12 @@ typedef enum {
 // Imports
 
 @import <Module.kh>
+
+// Not supported, but are planned to add in the future
+
+// Anytype functions (Basically a C++ Template)
+
+anytype function add(a, b) {
+  return a + b;
+}
+
