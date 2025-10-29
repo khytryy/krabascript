@@ -89,15 +89,18 @@ const char *TokenToKeyword(TokenType Token) {
     if (Token == Symbols[i].Type)
       return Symbols[i].Name;
   }
+
   switch (Token) {
-  case ks_identifier:
-    return "identifier";
-  case ks_int_lit:
-    return "int_lit";
-  case ks_char_lit:
-    return "char_lit";
-  default:
-    return "unknown";
+    case KS_IDENTIFIER:
+      return "identifier";
+    case KS_INT_LIT:
+      return "int_lit";
+    case KS_CHAR_LIT:
+      return "char_lit";
+    case KS_STRING_LIT:
+      return "string_lit";
+    default:
+      return "unknown";
   }
 
   return "unknown";
@@ -108,7 +111,7 @@ TokenType KeywordToToken(const char *Keyword) {
     if (strcmp(Keyword, Keywords[i].Name) == 0)
       return Keywords[i].Type;
   }
-  return ks_identifier; // Default on ks_identifier if not a keyword
+  return KS_IDENTIFIER; // Default on KS_IDENTIFIER if not a keyword
 }
 
 TokenType SymbolToToken(const char *Keyword) {
@@ -117,7 +120,7 @@ TokenType SymbolToToken(const char *Keyword) {
       return Symbols[i].Type;
   }
 
-  return ks_identifier;
+  return KS_IDENTIFIER;
 }
 
 TokenVector Tokenize(char *SourceF) {
@@ -145,29 +148,48 @@ TokenVector Tokenize(char *SourceF) {
 
       TokenType TempTokenT = KeywordToToken(Buffer.Data);
 
-      if (TempTokenT == ks_identifier) {
+      if (TempTokenT == KS_IDENTIFIER) {
         TVecPush(&Tokens,
-                 (Token){.Type = ks_identifier,
+                 (Token){.Type = KS_IDENTIFIER,
                          .Value = {.HasValue = true,
-                                   .Type = type_string,
+                                   .Type = TYPE_STRING,
                                    .Data = {.S = strdup(Buffer.Data)}}});
       } else {
         TVecPush(&Tokens,
                  (Token){.Type = TempTokenT, .Value = {.HasValue = false}});
       }
+
       Buffer.Size = 0;
       
     } else if (isspace(C)) {
       Consume();
       continue;
 
-    } else if (C == '\0') {
+    } else if (C == '"') {
 
+      Consume();
+      Buffer.Size = 0;
+
+      // Copy everything into a buffer until we find a dquote
+      while (PeekHasValue(0) && Peek(0) != '"') {
+        CVecPush(&Buffer, Consume());
+      }
+
+      if (PeekHasValue(0) && Peek(0) == '"') Consume();
+
+      // Push a string
+      TVecPush(&Tokens, (Token){
+        .Type = KS_STRING_LIT,
+        .Value = {.HasValue = true, .Type = TYPE_STRING, .Data = {.S = strdup(Buffer.Data)}}
+      });
+
+      Buffer.Size = 0;
+
+    } else if (C == '\0') {
       Consume();
       break;
 
     } else if (C == '\n') {
-
       Consume();
       continue;
 
@@ -177,7 +199,7 @@ TokenVector Tokenize(char *SourceF) {
       Consume();
 
       TVecPush(&Tokens,
-               (Token){.Type = ks_arrow, .Value = {.HasValue = false}});
+               (Token){.Type = KS_ARROW, .Value = {.HasValue = false}});
     } else if (isdigit(C)) {
       CVecPush(&Buffer, Consume());
 
@@ -190,9 +212,9 @@ TokenVector Tokenize(char *SourceF) {
 
       int value = atoi(Buffer.Data);
 
-      TVecPush(&Tokens, (Token){.Type = ks_int_lit,
+      TVecPush(&Tokens, (Token){.Type = KS_INT_LIT,
                                 .Value = {.HasValue = true,
-                                          .Type = type_int,
+                                          .Type = TYPE_INT,
                                           .Data = {.I = value}}});
 
       Buffer.Size = 0;
@@ -221,10 +243,10 @@ void PrintTokens(TokenVector Tokens) {
 
     if (t->Value.HasValue) {
       switch (t->Value.Type) {
-      case type_int:
+      case TYPE_INT:
         printf(" -> %d", t->Value.Data.I);
         break;
-      case type_string:
+      case TYPE_STRING:
         printf(" -> \"%s\"", t->Value.Data.S);
         break;
       default:
