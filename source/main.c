@@ -21,7 +21,8 @@
                       "Output file name")                                      \
   OPTIONAL_UINT_ARG(optimization_lvl, 1, "-O", "Optimization",                 \
                     "Optimization level")                                      \
-  OPTIONAL_STRING_ARG(include_folder, NULL, "-I", "Include", "Include path")
+  OPTIONAL_STRING_ARG(include_folder, NULL, "-I", "Include", "Include path")   \
+  OPTIONAL_STRING_ARG(string_source, NULL, "-S", "String", "String source")
 
 #define BOOLEAN_ARGS                                                           \
   BOOLEAN_ARG(help, "-h", "Show help")                                         \
@@ -39,13 +40,16 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
+  if (Args.string_source != NULL) {
+    RunCompiler(Args.string_source, Args.verbose, Args.comtime);
+    return 0;
+  }
+  
   FILE *Source = fopen(Args.input_file, "r");
-
   if (Source == NULL) {
-    fprintf(stderr, "%skrabascript:%s %sERROR:%s Error opening %s: ", BWHT,
-            COLOR_RESET, BRED, COLOR_RESET, Args.input_file);
+    fprintf(stderr, "%skrabascript:%s %sERROR:%s Error opening %s: ",
+            BWHT, COLOR_RESET, BRED, COLOR_RESET, Args.input_file);
     perror("");
-
     return 1;
   }
 
@@ -56,36 +60,10 @@ int main(int argc, char *argv[]) {
     StringAppend(&StringSource, SourceTemp);
   }
 
-  clock_t Start, End;
-  double TokenizerTime;
+  fclose(Source);
 
-  Start = clock();
-
-  TokenVector Tokens = Tokenize(StringSource);
-  if (Args.verbose == true) {
-    PrintTokens(Tokens);
-  }
-
-  End = clock();
-  TokenizerTime = ((double)(End - Start)) / CLOCKS_PER_SEC;
-
-  if (Args.comtime == true) {
-    printf("%skrabascript:%s INFO:%s Tokenizer finished in %s%f%s.\n", BWHT,
-           BCYN, COLOR_RESET, BMAG, TokenizerTime, COLOR_RESET);
-  }
-
-  double ASTTime;
-
-  Start = clock();
-  ASTParent AST = CreateAST(&Tokens, Args.comtime);
-
-  End = clock();
-  ASTTime = ((double)(End - Start)) / CLOCKS_PER_SEC;
-
-  if (Args.comtime == true) {
-    printf("%skrabascript:%s INFO:%s Parser finished in %s%f%s.\n", BWHT,
-           BCYN, COLOR_RESET, BMAG, ASTTime, COLOR_RESET);
-  }
+  RunCompiler(StringSource, Args.verbose, Args.comtime);
+  free(StringSource);
 
   return 0;
 }

@@ -1,1 +1,1 @@
-int kraba = 5;
+string kraba = "Kraba!";

@@ -10,3 +10,7 @@
 #include <tokenizer.h>
 #include <parser.h>
 #include <ksconf.h>
+
+#include <time.h>
+
+void RunCompiler(char *SourceFile, bool Verbose, bool ShowTime);

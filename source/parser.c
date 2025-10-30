@@ -113,13 +113,93 @@ void IntHandler(ASTParent *Parent, TokenVector *Tokens, size_t *Index) {
             exit(1);
         }
 
-        Token TempToken = GetToken(Tokens, *Index + 3);
+        Token TempToken = GetToken(Tokens, *Index + 1);
+        Token TempToken2 = GetToken(Tokens, *Index + 3);
 
         Node.NodeType = INT_DECLARATION;
         Node.Value.HasValue = true;
         Node.Value.Type = TYPE_INT;
 
-        Node.Value.Data.I = TempToken.Value.Data.I;
+        Node.Value.Data.I = TempToken2.Value.Data.I;
+        Node.Identifier = TempToken.Value.Data.S;
+
+        ANVecPush(&Parent->Children, Node);
+
+        *Index += 5;
+        return;
+    }
+}
+
+void StringHandler(ASTParent *Parent, TokenVector *Tokens, size_t *Index) {
+    size_t TokensLeft = Tokens->Size - *Index;
+
+    ASTNode Node;
+
+    if (TokensLeft < 2) {
+
+        printf("%skrabascript:%s %sERROR:%s Expected an identifier, got EOF.\n", 
+            BWHT, COLOR_RESET, BRED, COLOR_RESET);
+        exit(1);
+    }
+
+    if (GetTokenType(Tokens, *Index + 1) != KS_IDENTIFIER) {
+        printf("%skrabascript:%s %sERROR:%s Expected an identifier, got '%s'.\n", 
+            BWHT, COLOR_RESET, BRED, COLOR_RESET, 
+            TokenToKeyword(GetTokenType(Tokens, *Index + 1)));
+        exit(1);
+    }
+
+    if (TokensLeft < 3) {
+        printf("%skrabascript:%s %sERROR:%s Expected ';' or '=', got EOF.\n", 
+            BWHT, COLOR_RESET, BRED, COLOR_RESET);
+        exit(1);
+    }
+
+    if (GetTokenType(Tokens, *Index + 2) == KS_SEMI) {
+        Token TempToken = GetToken(Tokens, *Index + 1);
+
+        Node.Value.HasValue = false;
+        Node.Identifier = TempToken.Value.Data.S;
+
+        Node.NodeType = STRING_DECLARATION;
+
+        ANVecPush(&Parent->Children, Node);
+
+        *Index += 3;
+        return;
+    }
+
+    if (GetTokenType(Tokens, *Index + 2) == KS_EQUALS) {
+        if (TokensLeft < 4) {
+            printf("%skrabascript:%s %sERROR:%s Expected a string literal, got EOF.\n", 
+                BWHT, COLOR_RESET, BRED, COLOR_RESET);
+            exit(1);
+        }
+
+        if (GetTokenType(Tokens, *Index + 3) != KS_STRING_LIT) {
+            printf("%skrabascript:%s %sERROR:%s Expected a string literal, got '%s'.\n", 
+                BWHT, COLOR_RESET, BRED, COLOR_RESET, TokenToKeyword(GetTokenType(Tokens, *Index + 3)));
+            exit(1);
+        }
+
+        if (GetTokenType(Tokens, *Index + 4) != KS_SEMI) {
+            if (TokensLeft < 5) {
+                printf("%skrabascript:%s %sERROR:%s Expected ';', got EOF.\n", 
+                    BWHT, COLOR_RESET, BRED, COLOR_RESET);
+                exit(1);
+            }
+
+            printf("%skrabascript:%s %sERROR:%s Expected ';', got '%s'.\n", 
+                BWHT, COLOR_RESET, BRED, COLOR_RESET, TokenToKeyword(GetTokenType(Tokens, *Index + 4)));
+            exit(1);
+        }
+
+        Token TempToken = GetToken(Tokens, *Index + 1);
+        Token TempToken2 = GetToken(Tokens, *Index + 3);
+
+        Node.Value.HasValue = true;
+        Node.Identifier = TempToken.Value.Data.S;
+        Node.Value.Data.S = TempToken2.Value.Data.S;
 
         ANVecPush(&Parent->Children, Node);
 
@@ -130,6 +210,7 @@ void IntHandler(ASTParent *Parent, TokenVector *Tokens, size_t *Index) {
 
 HandlerEntry Handlers[] = {
     { KS_INT, IntHandler },
+    { KS_STRING, StringHandler },
 };
 
 ASTParent CreateAST(TokenVector *Tokens, bool Verbose) {
