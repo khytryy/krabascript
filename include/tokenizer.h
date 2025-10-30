@@ -8,10 +8,9 @@
 #pragma once
 
 #include <stdio.h>
-#include <stdlib.h> // For free, realloc
+#include <stdlib.h>
 
-#include <ctype.h>   // For isalpha
-#include <stdbool.h> // For bool
+#include <stdbool.h>
 #include <string.h>
 
 #include "colors.h"
@@ -74,6 +73,8 @@ typedef enum {
   KS_MINUS,
   KS_SLASH,
   KS_BACKSLASH,
+  KS_SHIFTL,
+  KS_SHIFTR,
   KS_INT_LIT,
   KS_STRING_LIT,
   KS_CHAR_LIT,
@@ -187,6 +188,8 @@ static const KeywordEntry Symbols[] = {
     {"]", KS_CLOSED_BRACKET},
     {"{", KS_OPEN_CURLY},
     {"}", KS_CLOSED_CURLY},
+    {"<<", KS_SHIFTL},
+    {">>", KS_SHIFTR},
     {"<", KS_OPEN_ARROW},
     {">", KS_CLOSED_ARROW},
     {"#", KS_HASHTAG},

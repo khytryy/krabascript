@@ -16,19 +16,7 @@
  sizeof(ARRAY) / sizeof(ARRAY[0])
 
 typedef enum {
-  INT_ASSIGNMENT,
   INT_DECLARATION,
-  FUNCTION_DEC,
-  FLOAT_DECLARATION,
-  FLOAT_ASSIGNMENT,
-  DOUBLE_ASSIGNMENT,
-  STRING_DECLARATION,
-  STRING_ASSIGNMENT,
-  CHAR_ASSIGNMENT,
-  FOR_LOOP,
-  WHILE_LOOP,
-  IF_STATEMENT,
-  ELSE_STATEMENT,
 
 } ASTType;
 
@@ -53,7 +41,7 @@ struct ASTNodeVector {
 
 typedef struct {
   ASTType         NodeType;
-  ASTNodeVector   *Children;
+  ASTNodeVector   Children;
 
 } ASTParent;
 
@@ -71,6 +59,9 @@ typedef struct {
 
 extern HandlerEntry Handlers[];
 
+TokenType GetTokenType(TokenVector *Tokens, size_t Index);
+Token GetToken(TokenVector *Tokens, size_t Index);
+
 void IntHandler(ASTParent *Parent, TokenVector *Tokens, size_t *Index);
 
-ASTParent CreateAST(TokenVector *Tokens);
+ASTParent CreateAST(TokenVector *Tokens, bool Verbose);

@@ -7,6 +7,8 @@
 
 #include <tokenizer.h>
 
+#include <ctype.h>
+
 size_t Index = 0;
 size_t Line = 0;
 
@@ -219,12 +221,22 @@ TokenVector Tokenize(char *SourceF) {
 
       Buffer.Size = 0;
     } else {
-      const char C = Consume();
 
-      char Temp[2] = {C, '\0'};
-      TokenType Symbol = SymbolToToken(Temp);
+      if (PeekHasValue(1)) {
+        char twoChar[3] = {Peek(0), Peek(1), '\0'};
+        TokenType twoSym = SymbolToToken(twoChar);
 
-      TVecPush(&Tokens, (Token){.Type = Symbol, .Value = {.HasValue = false}});
+        if (twoSym != KS_IDENTIFIER) {
+          Consume();
+          Consume();
+          TVecPush(&Tokens, (Token){.Type = twoSym, .Value = {.HasValue = false}});
+          continue;
+        }
+      }
+
+      char oneChar[2] = {Consume(), '\0'};
+      TokenType oneSym = SymbolToToken(oneChar);
+      TVecPush(&Tokens, (Token){.Type = oneSym, .Value = {.HasValue = false}});
     }
   }
 

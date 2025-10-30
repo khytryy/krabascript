@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
   double ASTTime;
 
   Start = clock();
-  // ASTParent AST = CreateAST(Tokens, Args.comtime);
+  ASTParent AST = CreateAST(&Tokens, Args.comtime);
 
   End = clock();
   ASTTime = ((double)(End - Start)) / CLOCKS_PER_SEC;
