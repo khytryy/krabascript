@@ -34,6 +34,12 @@ typedef enum {
   KS_LONG,
   KS_UNSIGNED,
   KS_INT,
+  KS_I64,
+  KS_I32,
+  KS_I16,
+  KS_U64,
+  KS_U32,
+  KS_U16,
   KS_CHAR,
   KS_SIZEOF,
   KS_RETURN,
@@ -49,7 +55,8 @@ typedef enum {
   KS_STATIC,
   KS_FUNCTION,
   KS_IMPORT,
-  KS_STRING,            // Use this comment if you're lost
+  KS_STRING,
+  KS_ANYTYPE,
   KS_ARROW,
   KS_OPEN_PAREN,
   KS_CLOSED_PAREN,
@@ -71,6 +78,8 @@ typedef enum {
   KS_AT,
   KS_PLUS,
   KS_MINUS,
+  KS_MUL,
+  KS_DIV,
   KS_SLASH,
   KS_BACKSLASH,
   KS_SHIFTL,
@@ -158,8 +167,8 @@ static const KeywordEntry Keywords[] = {
     {"default", KS_DEFAULT},
     {"short", KS_SHORT},
     {"long", KS_LONG},
-    {"unsigned", KS_UNSIGNED},
     {"int", KS_INT},
+    {"unsigned", KS_UNSIGNED},
     {"char", KS_CHAR},
     {"sizeof", KS_SIZEOF},
     {"return", KS_RETURN},
@@ -175,6 +184,7 @@ static const KeywordEntry Keywords[] = {
     {"function", KS_FUNCTION},
     {"import", KS_IMPORT},
     {"string", KS_STRING},
+    {"anytype", KS_ANYTYPE},
 
     {NULL, 0} // End marker
 };
@@ -205,6 +215,8 @@ static const KeywordEntry Symbols[] = {
     {"-", KS_MINUS},
     {"/", KS_SLASH},
     {"\\", KS_BACKSLASH},
+    {"*", KS_MUL},
+    {"/", KS_DIV},
 
     {NULL, 0},
 

@@ -18,6 +18,12 @@
 typedef enum {
   INT_DECLARATION,
   STRING_DECLARATION,
+  CHAR_DECLARATION,
+  PLUS_OPERATOR,
+  MINUS_OPERATOR,
+  MUL_OPERATOR,
+  DIV_OPERATOR,
+  EXPRESSION,
 
 } ASTType;
 
@@ -63,7 +69,10 @@ extern HandlerEntry Handlers[];
 TokenType GetTokenType(TokenVector *Tokens, size_t Index);
 Token GetToken(TokenVector *Tokens, size_t Index);
 
+ASTNode CreateExpressionTree(TokenVector *Tokens, size_t Index);
+
 void IntHandler(ASTParent *Parent, TokenVector *Tokens, size_t *Index);
 void StringHandler(ASTParent *Parent, TokenVector *Tokens, size_t *Index);
+void CharHandler(ASTParent *Parent, TokenVector *Tokens, size_t *Index);
 
 ASTParent CreateAST(TokenVector *Tokens, bool Verbose);

@@ -187,6 +187,60 @@ TokenVector Tokenize(char *SourceF) {
 
       Buffer.Size = 0;
 
+    } else if (C == '\'') {
+      Consume();
+      Buffer.Size = 0;
+
+      // Copy everything into a buffer until we find a closing quote
+      while (PeekHasValue(0) && Peek(0) != '\'') {
+        CVecPush(&Buffer, Consume());
+      }
+
+      if (PeekHasValue(0) && Peek(0) == '\'') {
+        Consume();
+      } else {
+        printf("%skrabascript:%s %sERROR:%s Unterminated char literal.\n",
+           BWHT, COLOR_RESET, BRED, COLOR_RESET);
+        exit(1);
+      }
+
+      if (Buffer.Size == 1) {
+        TVecPush(&Tokens, (Token){
+          .Type = KS_CHAR_LIT,
+          .Value = {.HasValue = true, .Type = TYPE_CHAR, .Data = {.C = Buffer.Data[0]}}
+        });
+      } else {
+
+        printf("%skrabascript:%s %sERROR:%s Char contains a multi-character constant.\n",
+           BWHT, COLOR_RESET, BRED, COLOR_RESET);
+        exit(1);
+      }
+
+      Buffer.Size = 0;
+
+      // Single line comments
+    } else if (C == '/' && PeekHasValue(1) && Peek(1) == '/') {
+      Consume();
+      Consume();
+
+      while(PeekHasValue(0) && Peek(0) != '\n') {
+        Consume();
+      }
+
+    } else if (C == '/' && PeekHasValue(1) && Peek(1) == '*') {
+      Consume();
+      Consume();
+
+      while(PeekHasValue(0) && 
+          Peek(0) != '*' && 
+            PeekHasValue(1) && Peek(1) != '/') {
+
+        Consume();
+      }
+
+      Consume();
+      Consume();
+
     } else if (C == '\0') {
       Consume();
       break;
@@ -255,14 +309,17 @@ void PrintTokens(TokenVector Tokens) {
 
     if (t->Value.HasValue) {
       switch (t->Value.Type) {
-      case TYPE_INT:
-        printf(" -> %d", t->Value.Data.I);
-        break;
-      case TYPE_STRING:
-        printf(" -> \"%s\"", t->Value.Data.S);
-        break;
-      default:
-        break;
+        case TYPE_INT:
+          printf(" -> %d", t->Value.Data.I);
+          break;
+        case TYPE_STRING:
+          printf(" -> \"%s\"", t->Value.Data.S);
+          break;
+        case TYPE_CHAR:
+          printf(" -> \"%c\"", t->Value.Data.C);
+          break;
+        default:
+          break;
       }
     }
 
